@@ -1,13 +1,14 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal, computed } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { ChatService } from "./chat.service";
 import { DatePipe } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-chat-list",
   standalone: true,
-  imports: [RouterLink, MatIconModule, DatePipe],
+  imports: [RouterLink, MatIconModule, DatePipe, FormsModule],
   template: `
     <div
       class="relative flex min-h-screen w-full flex-col bg-[#f6f8f7] dark:bg-[#122017] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden"
@@ -16,27 +17,49 @@ import { DatePipe } from "@angular/common";
         class="sticky top-0 z-10 bg-[#f6f8f7] dark:bg-[#122017] px-4 pt-4 pb-2"
       >
         <div class="flex items-center justify-between mb-4">
-          <h1 class="text-[#25d466] text-2xl font-bold tracking-tight">
-            ZapChat
-          </h1>
-          <div class="flex items-center gap-4">
-            <button
-              class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
-            >
-              <mat-icon>photo_camera</mat-icon>
-            </button>
-            <button
-              class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
-            >
-              <mat-icon>search</mat-icon>
-            </button>
-            <button
-              routerLink="/profile"
-              class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
-            >
-              <mat-icon>account_circle</mat-icon>
-            </button>
-          </div>
+          @if (isSearching()) {
+            <div class="flex items-center w-full gap-2 bg-[#274532]/30 rounded-full px-4 py-1">
+              <button (click)="toggleSearch()" class="flex items-center justify-center text-slate-400 hover:text-slate-100 transition-colors">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <input 
+                type="text" 
+                [(ngModel)]="searchQuery" 
+                placeholder="Search..." 
+                class="flex-1 bg-transparent border-none outline-none text-slate-100 placeholder-slate-400 text-base"
+              />
+              @if (searchQuery()) {
+                <button (click)="searchQuery.set('')" class="flex items-center justify-center text-slate-400 hover:text-slate-100 transition-colors">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+          } @else {
+            <h1 class="text-[#25d466] text-2xl font-bold tracking-tight">
+              ZapChat
+            </h1>
+            <div class="flex items-center gap-4">
+              <button
+                (click)="cameraInput.click()"
+                class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
+              >
+                <mat-icon>photo_camera</mat-icon>
+              </button>
+              <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
+              <button
+                (click)="toggleSearch()"
+                class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+              <button
+                routerLink="/profile"
+                class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
+              >
+                <mat-icon>account_circle</mat-icon>
+              </button>
+            </div>
+          }
         </div>
         <div class="flex border-b border-[#274532]/30 gap-8">
           <a
@@ -62,7 +85,7 @@ import { DatePipe } from "@angular/common";
 
       <main class="flex-1 overflow-y-auto">
         <div class="flex flex-col">
-          @for (chat of chatService.chats(); track chat.id) {
+          @for (chat of filteredChats(); track chat.id) {
             <div
               [routerLink]="['/chats', chat.id]"
               class="flex items-center gap-4 bg-transparent px-4 py-3 hover:bg-[#25d466]/5 cursor-pointer"
@@ -143,4 +166,31 @@ import { DatePipe } from "@angular/common";
 })
 export class ChatListComponent {
   chatService = inject(ChatService);
+  
+  isSearching = signal(false);
+  searchQuery = signal('');
+
+  filteredChats = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    const chats = this.chatService.chats();
+    if (!query) return chats;
+    return chats.filter(chat => chat.name.toLowerCase().includes(query) || (chat.lastMessage && chat.lastMessage.toLowerCase().includes(query)));
+  });
+
+  toggleSearch() {
+    this.isSearching.set(!this.isSearching());
+    if (!this.isSearching()) {
+      this.searchQuery.set('');
+    }
+  }
+
+  onCameraCapture(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      // In a real app, we would upload this file or navigate to a send screen
+      console.log('File captured:', input.files[0]);
+      alert('Photo/Video captured! (This is a demo)');
+      input.value = ''; // Reset input
+    }
+  }
 }
