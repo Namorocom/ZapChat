@@ -40,6 +40,15 @@ export class SupabaseService {
     return this.supabase.auth.signInWithPassword({ email, password });
   }
 
+  async updateProfile(data: { full_name?: string; email?: string }) {
+    return this.supabase.auth.updateUser({
+      email: data.email,
+      data: {
+        full_name: data.full_name
+      }
+    });
+  }
+
   async signOut() {
     return this.supabase.auth.signOut();
   }

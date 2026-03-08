@@ -18,8 +18,8 @@ import { MatIconModule } from "@angular/material/icon";
             <button class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
               <mat-icon>search</mat-icon>
             </button>
-            <button class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
-              <mat-icon>more_vert</mat-icon>
+            <button routerLink="/profile" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
+              <mat-icon>account_circle</mat-icon>
             </button>
           </div>
         </div>
@@ -89,12 +89,6 @@ import { MatIconModule } from "@angular/material/icon";
               <mat-icon>update</mat-icon>
             </div>
             <p class="text-xs font-medium">Updates</p>
-          </a>
-          <a class="flex flex-1 flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-[#25d466] transition-colors">
-            <div class="flex h-8 items-center justify-center">
-              <mat-icon>group</mat-icon>
-            </div>
-            <p class="text-xs font-medium">Communities</p>
           </a>
           <a routerLink="/calls" class="flex flex-1 flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-[#25d466] transition-colors">
             <div class="flex h-8 items-center justify-center">
