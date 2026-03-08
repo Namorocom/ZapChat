@@ -1,12 +1,14 @@
-import { Component, inject } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Component, inject, signal } from "@angular/core";
+import { RouterLink, Router } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { TranslationService } from "./translation.service";
+import { SupabaseService } from "./supabase.service";
+import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [RouterLink, MatIconModule],
+  imports: [RouterLink, MatIconModule, ReactiveFormsModule],
   template: `
     <div
       class="relative flex h-auto min-h-screen w-full flex-col bg-[#f6f8f7] dark:bg-[#122017] overflow-x-hidden font-sans"
@@ -36,7 +38,7 @@ import { TranslationService } from "./translation.service";
           {{ ts.t().enterDetails }}
         </p>
 
-        <div class="space-y-4 w-full max-w-[480px] text-left">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 w-full max-w-[480px] text-left">
           <div class="flex flex-col w-full">
             <label
               for="phoneOrEmail"
@@ -45,9 +47,10 @@ import { TranslationService } from "./translation.service";
             >
             <input
               id="phoneOrEmail"
+              formControlName="email"
               class="flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#25d466] border-none bg-slate-200 dark:bg-[#25d466]/10 h-14 placeholder:text-slate-500 dark:placeholder:text-[#25d466]/40 p-4 text-base font-normal"
-              placeholder="e.g. +1 234 567 890"
-              type="text"
+              placeholder="e.g. email@example.com"
+              type="email"
             />
           </div>
           <div class="flex flex-col w-full">
@@ -68,6 +71,7 @@ import { TranslationService } from "./translation.service";
             >
               <input
                 id="password"
+                formControlName="password"
                 class="flex w-full min-w-0 flex-1 border-none bg-transparent h-14 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-[#25d466]/40 p-4 text-base font-normal focus:ring-0 outline-none"
                 placeholder="••••••••"
                 type="password"
@@ -79,12 +83,24 @@ import { TranslationService } from "./translation.service";
               </div>
             </div>
           </div>
+          
+          @if (errorMessage()) {
+            <div class="text-red-500 text-sm font-medium pt-2">
+              {{ errorMessage() }}
+            </div>
+          }
+
           <div class="pt-4">
             <button
-              routerLink="/chats"
-              class="w-full bg-[#25d466] hover:bg-[#25d466]/90 text-[#122017] font-bold text-base h-14 rounded-full transition-colors"
+              type="submit"
+              [disabled]="loginForm.invalid || isLoading()"
+              class="w-full bg-[#25d466] hover:bg-[#25d466]/90 disabled:opacity-50 disabled:cursor-not-allowed text-[#122017] font-bold text-base h-14 rounded-full transition-colors flex items-center justify-center"
             >
-              {{ ts.t().logIn }}
+              @if (isLoading()) {
+                <mat-icon class="animate-spin">refresh</mat-icon>
+              } @else {
+                {{ ts.t().logIn }}
+              }
             </button>
           </div>
 
@@ -102,6 +118,7 @@ import { TranslationService } from "./translation.service";
 
           <div class="grid grid-cols-2 gap-4">
             <button
+              type="button"
               class="flex items-center justify-center gap-2 h-12 rounded-lg border border-slate-300 dark:border-[#25d466]/20 bg-transparent hover:bg-slate-100 dark:hover:bg-[#25d466]/5 transition-colors"
             >
               <img
@@ -112,13 +129,14 @@ import { TranslationService } from "./translation.service";
               <span class="text-sm font-medium">Google</span>
             </button>
             <button
+              type="button"
               class="flex items-center justify-center gap-2 h-12 rounded-lg border border-slate-300 dark:border-[#25d466]/20 bg-transparent hover:bg-slate-100 dark:hover:bg-[#25d466]/5 transition-colors"
             >
               <mat-icon class="text-blue-600">social_leaderboard</mat-icon>
               <span class="text-sm font-medium">Facebook</span>
             </button>
           </div>
-        </div>
+        </form>
 
         <div class="mt-auto pt-12 pb-6 text-center">
           <p class="text-slate-600 dark:text-slate-400 text-sm">
@@ -139,4 +157,34 @@ import { TranslationService } from "./translation.service";
 })
 export class LoginComponent {
   ts = inject(TranslationService);
+  supabase = inject(SupabaseService);
+  router = inject(Router);
+  fb = inject(FormBuilder);
+
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+
+  isLoading = signal(false);
+  errorMessage = signal('');
+
+  async onSubmit() {
+    if (this.loginForm.invalid) return;
+    
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    
+    const { email, password } = this.loginForm.value;
+    
+    const { error } = await this.supabase.signIn(email!, password!);
+    
+    this.isLoading.set(false);
+    
+    if (error) {
+      this.errorMessage.set(error.message);
+    } else {
+      this.router.navigate(['/chats']);
+    }
+  }
 }
