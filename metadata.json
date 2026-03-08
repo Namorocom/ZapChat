@@ -1,0 +1,5 @@
+{
+  "name": "ZapChat",
+  "description": "A WhatsApp-like messaging app with Gemini AI integrations for Search, Maps, and Veo video generation.",
+  "requestFramePermissions": []
+}
