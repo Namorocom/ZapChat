@@ -1,12 +1,14 @@
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { FormsModule } from "@angular/forms";
+import { SupabaseService } from "./supabase.service";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
   selector: "app-status",
   standalone: true,
-  imports: [RouterLink, MatIconModule, FormsModule],
+  imports: [RouterLink, MatIconModule, FormsModule, AsyncPipe],
   template: `
     <div class="relative flex min-h-screen w-full flex-col bg-[#f6f8f7] dark:bg-[#122017] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden">
       <header class="sticky top-0 z-10 bg-[#f6f8f7] dark:bg-[#122017] px-4 pt-4 pb-2">
@@ -38,7 +40,15 @@ import { FormsModule } from "@angular/forms";
                 <mat-icon>search</mat-icon>
               </button>
               <button routerLink="/profile" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
-                <mat-icon>account_circle</mat-icon>
+                @if (supabase.currentUser | async; as user) {
+                  @if (user.user_metadata?.['avatar_url']) {
+                    <img [src]="user.user_metadata?.['avatar_url']" alt="Profile" class="w-6 h-6 rounded-full object-cover border border-[#25d466]">
+                  } @else {
+                    <mat-icon>account_circle</mat-icon>
+                  }
+                } @else {
+                  <mat-icon>account_circle</mat-icon>
+                }
               </button>
             </div>
           }
@@ -50,16 +60,42 @@ import { FormsModule } from "@angular/forms";
         
         <div (click)="cameraInput.click()" (keydown.enter)="cameraInput.click()" tabindex="0" role="button" class="flex items-center gap-4 mb-6 cursor-pointer hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
           <div class="relative shrink-0">
-            <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-14 w-14 flex items-center justify-center">
-              <mat-icon class="text-slate-500 dark:text-slate-400">person</mat-icon>
-            </div>
-            <div class="absolute bottom-0 right-0 w-5 h-5 bg-[#25d466] border-2 border-[#f6f8f7] dark:border-[#122017] rounded-full flex items-center justify-center">
-              <mat-icon class="text-[14px] text-[#122017] font-bold">add</mat-icon>
-            </div>
+            @if (myStatus()) {
+              <div class="relative shrink-0 p-[2px] rounded-full bg-gradient-to-tr from-[#25d466] to-[#25d466]">
+                @if (myStatus()?.type === 'image') {
+                  <img [src]="myStatus()?.content" class="bg-slate-300 dark:bg-slate-700 aspect-square object-cover rounded-full h-14 w-14 border-2 border-[#f6f8f7] dark:border-[#122017]" alt="My Status">
+                } @else {
+                  <div class="bg-[#25d466]/20 aspect-square rounded-full h-14 w-14 border-2 border-[#f6f8f7] dark:border-[#122017] flex items-center justify-center p-2 text-center overflow-hidden">
+                    <span class="text-[8px] leading-tight text-slate-900 dark:text-slate-100 break-words">{{ myStatus()?.content }}</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-14 w-14 flex items-center justify-center">
+                @if (supabase.currentUser | async; as user) {
+                  @if (user.user_metadata?.['avatar_url']) {
+                    <img [src]="user.user_metadata?.['avatar_url']" alt="Profile" class="w-full h-full rounded-full object-cover">
+                  } @else {
+                    <mat-icon class="text-slate-500 dark:text-slate-400">person</mat-icon>
+                  }
+                } @else {
+                  <mat-icon class="text-slate-500 dark:text-slate-400">person</mat-icon>
+                }
+              </div>
+              <div class="absolute bottom-0 right-0 w-5 h-5 bg-[#25d466] border-2 border-[#f6f8f7] dark:border-[#122017] rounded-full flex items-center justify-center">
+                <mat-icon class="text-[14px] text-[#122017] font-bold">add</mat-icon>
+              </div>
+            }
           </div>
           <div class="flex flex-col">
             <p class="text-slate-900 dark:text-slate-100 text-base font-bold">My status</p>
-            <p class="text-slate-500 dark:text-slate-400 text-sm">Tap to add status update</p>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">
+              @if (myStatus()) {
+                Just now
+              } @else {
+                Tap to add status update
+              }
+            </p>
           </div>
         </div>
 
@@ -124,8 +160,11 @@ import { FormsModule } from "@angular/forms";
   `
 })
 export class StatusComponent {
+  supabase = inject(SupabaseService);
   isSearching = signal(false);
   searchQuery = signal('');
+  
+  myStatus = signal<{ type: 'text' | 'image', content: string, time: Date } | null>(null);
 
   toggleSearch() {
     this.isSearching.set(!this.isSearching());
@@ -137,8 +176,16 @@ export class StatusComponent {
   onCameraCapture(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      console.log('File captured:', input.files[0]);
-      alert('Photo/Video captured! (This is a demo)');
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.myStatus.set({
+          type: 'image',
+          content: e.target?.result as string,
+          time: new Date()
+        });
+      };
+      reader.readAsDataURL(file);
       input.value = '';
     }
   }
@@ -148,6 +195,13 @@ export class StatusComponent {
   }
 
   openTextStatus() {
-    alert('Opening text status editor...');
+    const text = prompt('Enter your status update:');
+    if (text) {
+      this.myStatus.set({
+        type: 'text',
+        content: text,
+        time: new Date()
+      });
+    }
   }
 }

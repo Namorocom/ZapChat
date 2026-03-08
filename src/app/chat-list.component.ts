@@ -2,13 +2,14 @@ import { Component, inject, signal, computed } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { ChatService } from "./chat.service";
-import { DatePipe } from "@angular/common";
+import { DatePipe, AsyncPipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { SupabaseService } from "./supabase.service";
 
 @Component({
   selector: "app-chat-list",
   standalone: true,
-  imports: [RouterLink, MatIconModule, DatePipe, FormsModule],
+  imports: [RouterLink, MatIconModule, DatePipe, FormsModule, AsyncPipe],
   template: `
     <div
       class="relative flex min-h-screen w-full flex-col bg-[#f6f8f7] dark:bg-[#122017] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden"
@@ -55,7 +56,15 @@ import { FormsModule } from "@angular/forms";
                 routerLink="/profile"
                 class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
               >
-                <mat-icon>account_circle</mat-icon>
+                @if (supabase.currentUser | async; as user) {
+                  @if (user.user_metadata?.['avatar_url']) {
+                    <img [src]="user.user_metadata?.['avatar_url']" alt="Profile" class="w-6 h-6 rounded-full object-cover border border-[#25d466]">
+                  } @else {
+                    <mat-icon>account_circle</mat-icon>
+                  }
+                } @else {
+                  <mat-icon>account_circle</mat-icon>
+                }
               </button>
             </div>
           }
@@ -176,6 +185,7 @@ import { FormsModule } from "@angular/forms";
 })
 export class ChatListComponent {
   chatService = inject(ChatService);
+  supabase = inject(SupabaseService);
   
   isSearching = signal(false);
   searchQuery = signal('');
@@ -184,7 +194,7 @@ export class ChatListComponent {
     const query = this.searchQuery().toLowerCase();
     const chats = this.chatService.chats();
     if (!query) return chats;
-    return chats.filter(chat => chat.name.toLowerCase().includes(query) || (chat.lastMessage && chat.lastMessage.toLowerCase().includes(query)));
+    return chats.filter(chat => chat.name?.toLowerCase().includes(query) || (chat.lastMessage && chat.lastMessage.toLowerCase().includes(query)));
   });
 
   toggleSearch() {
