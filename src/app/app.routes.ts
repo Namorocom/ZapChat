@@ -22,6 +22,11 @@ export const routes: Routes = [
       import("./chat-list.component").then((m) => m.ChatListComponent),
   },
   {
+    path: "new-chat",
+    loadComponent: () =>
+      import("./new-chat.component").then((m) => m.NewChatComponent),
+  },
+  {
     path: "chats/:id",
     loadComponent: () =>
       import("./chat-detail.component").then((m) => m.ChatDetailComponent),

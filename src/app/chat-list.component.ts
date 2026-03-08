@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
 import { ChatService } from "./chat.service";
 import { DatePipe, AsyncPipe } from "@angular/common";
@@ -186,6 +186,7 @@ import { SupabaseService } from "./supabase.service";
 export class ChatListComponent {
   chatService = inject(ChatService);
   supabase = inject(SupabaseService);
+  router = inject(Router);
   
   isSearching = signal(false);
   searchQuery = signal('');
@@ -215,6 +216,6 @@ export class ChatListComponent {
   }
 
   newChat() {
-    alert('Select contact to chat with...');
+    this.router.navigate(['/new-chat']);
   }
 }

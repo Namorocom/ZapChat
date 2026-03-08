@@ -44,6 +44,7 @@ export class ChatService {
         
       if (error) {
         console.error('Error fetching users:', error);
+        this.loadMockChats();
         return;
       }
       
@@ -67,7 +68,52 @@ export class ChatService {
       }
     } catch (e) {
       console.error('Failed to load users', e);
+      this.loadMockChats();
     }
+  }
+
+  loadMockChats() {
+    this.chats.set([
+      {
+        id: "1",
+        name: "Alex Johnson",
+        avatar:
+          "https://lh3.googleusercontent.com/aida-public/AB6AXuBg_66d1g_b4cSYHUSzgtZLRp54EdmYwayqMaTwzYQclDhW3i1T68wpDQPyZb8HHZ5_Nnjq9JqYPqYMuGx3EDYQJNZ6lCnFQFap0smPDIyk6kDdH6IFQDVlhIbMSh277egoTBbSRQB-X0pOsxyNVNtBTZ2YTPtKGb9IwBzzqUBnK3ebxamzoPbNfpVky_xDfP2GjAkm60L48de0TrNSTyF5j4Pp5d9mKpK5hn9prh9dxCEeXrNFSb11oKL-BkPoenBfFaNgBAXZpBc",
+        unreadCount: 2,
+        type: "normal",
+        isOnline: true,
+        messages: [
+          {
+            id: "m1",
+            text: "Hey man! Are you still coming over for the game tonight? 🏀",
+            sender: "other",
+            timestamp: new Date(Date.now() - 3600000),
+          },
+          {
+            id: "m2",
+            text: "Absolutely! Just finishing up some work. Should be there in about 20 mins.",
+            sender: "me",
+            timestamp: new Date(Date.now() - 3500000),
+          },
+        ],
+      },
+      {
+        id: "2",
+        name: "Zap Search",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Search",
+        unreadCount: 0,
+        type: "search",
+        isOnline: true,
+        messages: [
+          {
+            id: "m1",
+            text: "Hi! I can search the web for you. What do you want to know?",
+            sender: "other",
+            timestamp: new Date(),
+          },
+        ],
+      },
+    ]);
   }
 
   getChat(id: string) {
