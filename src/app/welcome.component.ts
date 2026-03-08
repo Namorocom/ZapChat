@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
+import { TranslationService } from "./translation.service";
 
 @Component({
   selector: "app-welcome",
@@ -42,22 +43,25 @@ import { MatIconModule } from "@angular/material/icon";
         <h1
           class="text-slate-900 dark:text-slate-100 tracking-tight text-[32px] font-bold leading-tight text-center pb-4 pt-8"
         >
-          Welcome to ZapChat
+          {{ ts.t().welcome }}
         </h1>
         <p
           class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed text-center max-w-sm"
         >
-          Read our
-          <span class="text-[#25d466] cursor-pointer">Privacy Policy</span>. Tap
-          'Agree and continue' to accept the
-          <span class="text-[#25d466] cursor-pointer">Terms of Service</span>.
+          {{ ts.t().readOur }}
+          <span class="text-[#25d466] cursor-pointer">{{ ts.t().privacyPolicy }}</span>{{ ts.t().tapAgree }}
+          <span class="text-[#25d466] cursor-pointer">{{ ts.t().termsOfService }}</span>.
         </p>
 
         <div
-          class="mt-8 mb-4 flex items-center gap-2 px-4 py-2 rounded-full bg-[#25d466]/10 text-[#25d466] cursor-pointer"
+          (click)="ts.toggleLanguage()"
+          (keydown.enter)="ts.toggleLanguage()"
+          tabindex="0"
+          role="button"
+          class="mt-8 mb-4 flex items-center gap-2 px-4 py-2 rounded-full bg-[#25d466]/10 text-[#25d466] cursor-pointer hover:bg-[#25d466]/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[#25d466]"
         >
           <mat-icon class="text-[20px]">language</mat-icon>
-          <span class="text-sm font-medium">English</span>
+          <span class="text-sm font-medium">{{ ts.t().languageName }}</span>
           <mat-icon class="text-[20px]">expand_more</mat-icon>
         </div>
 
@@ -66,7 +70,7 @@ import { MatIconModule } from "@angular/material/icon";
             routerLink="/login"
             class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-[#25d466] text-[#122017] text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
           >
-            <span class="truncate">AGREE AND CONTINUE</span>
+            <span class="truncate">{{ ts.t().agreeAndContinue }}</span>
           </button>
         </div>
       </div>
@@ -75,13 +79,15 @@ import { MatIconModule } from "@angular/material/icon";
         <p
           class="text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400"
         >
-          from
+          {{ ts.t().from }}
         </p>
         <p class="text-sm font-bold tracking-widest text-[#25d466]">
-          ZAP STUDIO
+          {{ ts.t().zapStudio }}
         </p>
       </div>
     </div>
   `,
 })
-export class WelcomeComponent {}
+export class WelcomeComponent {
+  ts = inject(TranslationService);
+}

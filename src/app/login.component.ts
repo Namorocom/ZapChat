@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { MatIconModule } from "@angular/material/icon";
+import { TranslationService } from "./translation.service";
 
 @Component({
   selector: "app-login",
@@ -20,27 +21,27 @@ import { MatIconModule } from "@angular/material/icon";
         <h2
           class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12"
         >
-          Log in
+          {{ ts.t().logIn }}
         </h2>
       </div>
-      <div class="px-4 py-8">
+      <div class="px-4 py-8 flex flex-col items-center text-center">
         <h1
-          class="text-slate-900 dark:text-slate-100 tracking-tight text-[32px] font-bold leading-tight text-left pb-2"
+          class="text-slate-900 dark:text-slate-100 tracking-tight text-[32px] font-bold leading-tight pb-2"
         >
-          Welcome back
+          {{ ts.t().welcomeBack }}
         </h1>
         <p
-          class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal pb-6"
+          class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal pb-6 max-w-[480px]"
         >
-          Enter your details to continue messaging with your friends and family.
+          {{ ts.t().enterDetails }}
         </p>
 
-        <div class="space-y-4 max-w-[480px]">
+        <div class="space-y-4 w-full max-w-[480px] text-left">
           <div class="flex flex-col w-full">
             <label
               for="phoneOrEmail"
               class="text-slate-900 dark:text-slate-100 text-sm font-medium leading-normal pb-2"
-              >Phone number or Email</label
+              >{{ ts.t().phoneOrEmail }}</label
             >
             <input
               id="phoneOrEmail"
@@ -54,12 +55,12 @@ import { MatIconModule } from "@angular/material/icon";
               <label
                 for="password"
                 class="text-slate-900 dark:text-slate-100 text-sm font-medium leading-normal"
-                >Password</label
+                >{{ ts.t().password }}</label
               >
               <a
                 class="text-[#25d466] text-sm font-medium hover:underline"
                 href="#"
-                >Forgot password?</a
+                >{{ ts.t().forgotPassword }}</a
               >
             </div>
             <div
@@ -83,7 +84,7 @@ import { MatIconModule } from "@angular/material/icon";
               routerLink="/chats"
               class="w-full bg-[#25d466] hover:bg-[#25d466]/90 text-[#122017] font-bold text-base h-14 rounded-full transition-colors"
             >
-              Log In
+              {{ ts.t().logIn }}
             </button>
           </div>
 
@@ -92,7 +93,7 @@ import { MatIconModule } from "@angular/material/icon";
               class="flex-grow border-t border-slate-300 dark:border-[#25d466]/20"
             ></div>
             <span class="px-4 text-slate-500 dark:text-slate-400 text-sm"
-              >or continue with</span
+              >{{ ts.t().orContinueWith }}</span
             >
             <div
               class="flex-grow border-t border-slate-300 dark:border-[#25d466]/20"
@@ -121,11 +122,11 @@ import { MatIconModule } from "@angular/material/icon";
 
         <div class="mt-auto pt-12 pb-6 text-center">
           <p class="text-slate-600 dark:text-slate-400 text-sm">
-            Don't have an account?
+            {{ ts.t().dontHaveAccount }}
             <a
               routerLink="/signup"
               class="text-[#25d466] font-bold hover:underline"
-              >Sign up</a
+              >{{ ts.t().signUp }}</a
             >
           </p>
         </div>
@@ -136,4 +137,6 @@ import { MatIconModule } from "@angular/material/icon";
     </div>
   `,
 })
-export class LoginComponent {}
+export class LoginComponent {
+  ts = inject(TranslationService);
+}
