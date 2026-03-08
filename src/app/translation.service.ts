@@ -22,6 +22,9 @@ const translations = {
     orContinueWith: 'or continue with',
     dontHaveAccount: "Don't have an account?",
     signUp: 'Sign up',
+    verifyEmailTitle: 'Check your email',
+    verifyEmailMessage: 'We sent you a confirmation link. Please verify your email address to activate your account.',
+    backToLogin: 'Back to Log in',
   },
   pt: {
     welcome: 'Bem-vindo ao ZapChat',
@@ -42,6 +45,9 @@ const translations = {
     orContinueWith: 'ou continue com',
     dontHaveAccount: 'Não tem uma conta?',
     signUp: 'Inscrever-se',
+    verifyEmailTitle: 'Verifique seu e-mail',
+    verifyEmailMessage: 'Enviamos um link de confirmação. Por favor, verifique seu endereço de e-mail para ativar sua conta.',
+    backToLogin: 'Voltar para o Login',
   }
 };
 
