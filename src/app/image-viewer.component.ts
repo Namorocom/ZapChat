@@ -31,11 +31,13 @@ import { ChatService } from "./chat.service";
         </div>
         <div class="flex items-center gap-4">
           <button
+            (click)="action('Edit')"
             class="text-slate-100 hover:bg-white/10 rounded-full p-2 transition-colors"
           >
             <mat-icon>edit</mat-icon>
           </button>
           <button
+            (click)="action('More options')"
             class="text-slate-100 hover:bg-white/10 rounded-full p-2 transition-colors"
           >
             <mat-icon>more_vert</mat-icon>
@@ -58,7 +60,7 @@ import { ChatService } from "./chat.service";
         class="absolute bottom-0 left-0 w-full z-20 bg-gradient-to-t from-black/70 to-transparent pb-8 pt-16 px-6"
       >
         <div class="flex items-center justify-around max-w-md mx-auto">
-          <div class="flex flex-col items-center gap-1 group cursor-pointer">
+          <div (click)="action('Share')" (keydown.enter)="action('Share')" tabindex="0" role="button" class="flex flex-col items-center gap-1 group cursor-pointer">
             <div
               class="rounded-full bg-[#25d466]/20 p-3 text-[#25d466] group-hover:bg-[#25d466] group-hover:text-white transition-all"
             >
@@ -66,7 +68,7 @@ import { ChatService } from "./chat.service";
             </div>
             <p class="text-slate-200 text-xs font-medium">Share</p>
           </div>
-          <div class="flex flex-col items-center gap-1 group cursor-pointer">
+          <div (click)="action('Star')" (keydown.enter)="action('Star')" tabindex="0" role="button" class="flex flex-col items-center gap-1 group cursor-pointer">
             <div
               class="rounded-full bg-[#25d466]/20 p-3 text-[#25d466] group-hover:bg-[#25d466] group-hover:text-white transition-all"
             >
@@ -74,7 +76,7 @@ import { ChatService } from "./chat.service";
             </div>
             <p class="text-slate-200 text-xs font-medium">Star</p>
           </div>
-          <div class="flex flex-col items-center gap-1 group cursor-pointer">
+          <div (click)="action('Save')" (keydown.enter)="action('Save')" tabindex="0" role="button" class="flex flex-col items-center gap-1 group cursor-pointer">
             <div
               class="rounded-full bg-[#25d466]/20 p-3 text-[#25d466] group-hover:bg-[#25d466] group-hover:text-white transition-all"
             >
@@ -82,7 +84,7 @@ import { ChatService } from "./chat.service";
             </div>
             <p class="text-slate-200 text-xs font-medium">Save</p>
           </div>
-          <div class="flex flex-col items-center gap-1 group cursor-pointer">
+          <div (click)="action('Delete')" (keydown.enter)="action('Delete')" tabindex="0" role="button" class="flex flex-col items-center gap-1 group cursor-pointer">
             <div
               class="rounded-full bg-[#25d466]/20 p-3 text-[#25d466] group-hover:bg-[#25d466] group-hover:text-white transition-all"
             >
@@ -108,4 +110,8 @@ export class ImageViewerComponent {
     }
     return null;
   });
+
+  action(name: string) {
+    alert(`${name} action triggered!`);
+  }
 }

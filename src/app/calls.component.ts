@@ -34,7 +34,6 @@ import { FormsModule } from "@angular/forms";
               <button (click)="cameraInput.click()" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
                 <mat-icon>photo_camera</mat-icon>
               </button>
-              <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
               <button (click)="toggleSearch()" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
                 <mat-icon>search</mat-icon>
               </button>
@@ -47,7 +46,7 @@ import { FormsModule } from "@angular/forms";
       </header>
 
       <main class="flex-1 overflow-y-auto px-4">
-        <div class="flex items-center gap-4 mb-6">
+        <div (click)="createCallLink()" (keydown.enter)="createCallLink()" tabindex="0" role="button" class="flex items-center gap-4 mb-6 cursor-pointer hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
           <div class="relative shrink-0">
             <div class="bg-[#25d466] aspect-square rounded-full h-12 w-12 flex items-center justify-center shadow-sm">
               <mat-icon class="text-[#122017]">link</mat-icon>
@@ -62,7 +61,7 @@ import { FormsModule } from "@angular/forms";
         <div class="border-t border-slate-200 dark:border-[#274532]/30 pt-4">
           <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold mb-4">Recent</p>
           
-          <div class="flex items-center gap-4 mb-4">
+          <div class="flex items-center gap-4 mb-4 hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
             <div class="relative shrink-0">
               <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-12 w-12" style="background-image: url('https://picsum.photos/seed/status1/200/200')"></div>
             </div>
@@ -73,12 +72,12 @@ import { FormsModule } from "@angular/forms";
                 <p class="text-slate-500 dark:text-slate-400 text-sm">Today, 10:30 AM</p>
               </div>
             </div>
-            <button class="p-2 text-[#25d466]">
+            <button (click)="simulateCall('audio', 'Alex')" class="p-2 text-[#25d466] hover:bg-slate-300 dark:hover:bg-[#25d466]/20 rounded-full transition-colors">
               <mat-icon>call</mat-icon>
             </button>
           </div>
 
-          <div class="flex items-center gap-4 mb-4">
+          <div class="flex items-center gap-4 mb-4 hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
             <div class="relative shrink-0">
               <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-12 w-12" style="background-image: url('https://picsum.photos/seed/status2/200/200')"></div>
             </div>
@@ -89,16 +88,18 @@ import { FormsModule } from "@angular/forms";
                 <p class="text-slate-500 dark:text-slate-400 text-sm">Yesterday, 8:15 PM</p>
               </div>
             </div>
-            <button class="p-2 text-[#25d466]">
+            <button (click)="simulateCall('video', 'Sarah')" class="p-2 text-[#25d466] hover:bg-slate-300 dark:hover:bg-[#25d466]/20 rounded-full transition-colors">
               <mat-icon>videocam</mat-icon>
             </button>
           </div>
         </div>
       </main>
 
-      <button class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform z-20">
+      <button (click)="newCall()" class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform z-20">
         <mat-icon class="text-3xl font-bold">add_call</mat-icon>
       </button>
+
+      <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
 
       <footer class="sticky bottom-0 z-10 w-full border-t border-slate-200 dark:border-[#274532] bg-[#f6f8f7] dark:bg-[#1c3123] px-4 pb-6 pt-2">
         <nav class="flex justify-around items-center">
@@ -143,5 +144,17 @@ export class CallsComponent {
       alert('Photo/Video captured! (This is a demo)');
       input.value = '';
     }
+  }
+
+  createCallLink() {
+    alert('Call link created and copied to clipboard!');
+  }
+
+  simulateCall(type: 'audio' | 'video', name: string) {
+    alert(`Starting ${type} call with ${name}...`);
+  }
+
+  newCall() {
+    alert('Select contact to call...');
   }
 }

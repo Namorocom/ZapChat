@@ -45,7 +45,6 @@ import { FormsModule } from "@angular/forms";
               >
                 <mat-icon>photo_camera</mat-icon>
               </button>
-              <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
               <button
                 (click)="toggleSearch()"
                 class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors"
@@ -95,14 +94,22 @@ import { FormsModule } from "@angular/forms";
                   class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border border-[#274532]"
                   [style.background-image]="'url(' + chat.avatar + ')'"
                 ></div>
+                @if (chat.isOnline) {
+                  <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#25d466] border-2 border-[#122017] rounded-full"></div>
+                }
               </div>
               <div
                 class="flex flex-1 flex-col justify-center overflow-hidden border-b border-[#274532]/20 pb-3"
               >
                 <div class="flex justify-between items-center mb-1">
-                  <p class="text-slate-100 text-base font-bold truncate">
-                    {{ chat.name }}
-                  </p>
+                  <div class="flex items-center gap-2 truncate">
+                    <p class="text-slate-100 text-base font-bold truncate">
+                      {{ chat.name }}
+                    </p>
+                    @if (!chat.isOnline && chat.lastSeen) {
+                      <span class="text-xs text-slate-500 truncate">Last seen {{ chat.lastSeen | date: 'shortTime' }}</span>
+                    }
+                  </div>
                   <p class="text-[#25d466] text-xs font-medium">
                     {{
                       chat.lastMessageTime
@@ -132,10 +139,13 @@ import { FormsModule } from "@angular/forms";
       </main>
 
       <button
+        (click)="newChat()"
         class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform z-20"
       >
         <mat-icon class="text-3xl font-bold">chat</mat-icon>
       </button>
+
+      <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
 
       <footer
         class="sticky bottom-0 z-10 w-full border-t border-[#274532] bg-[#1c3123] px-4 pb-6 pt-2"
@@ -192,5 +202,9 @@ export class ChatListComponent {
       alert('Photo/Video captured! (This is a demo)');
       input.value = ''; // Reset input
     }
+  }
+
+  newChat() {
+    alert('Select contact to chat with...');
   }
 }

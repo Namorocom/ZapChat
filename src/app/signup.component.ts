@@ -102,12 +102,16 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
                   formControlName="password"
                   class="flex w-full min-w-0 flex-1 resize-none overflow-hidden border-none bg-transparent h-14 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#25d466]/40 p-[15px] pr-2 text-base font-normal leading-normal focus:ring-0 outline-none"
                   placeholder="Min. 8 characters"
-                  type="password"
+                  [type]="showPassword() ? 'text' : 'password'"
                 />
                 <div
-                  class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center pr-[15px] cursor-pointer"
+                  (click)="togglePassword()"
+                  (keydown.enter)="togglePassword()"
+                  tabindex="0"
+                  role="button"
+                  class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center pr-[15px] cursor-pointer hover:text-slate-700 dark:hover:text-[#25d466] transition-colors"
                 >
-                  <mat-icon>visibility</mat-icon>
+                  <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </div>
               </div>
             </label>
@@ -127,12 +131,16 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
                   formControlName="confirmPassword"
                   class="flex w-full min-w-0 flex-1 resize-none overflow-hidden border-none bg-transparent h-14 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#25d466]/40 p-[15px] pr-2 text-base font-normal leading-normal focus:ring-0 outline-none"
                   placeholder="Repeat password"
-                  type="password"
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
                 />
                 <div
-                  class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center pr-[15px] cursor-pointer"
+                  (click)="toggleConfirmPassword()"
+                  (keydown.enter)="toggleConfirmPassword()"
+                  tabindex="0"
+                  role="button"
+                  class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center pr-[15px] cursor-pointer hover:text-slate-700 dark:hover:text-[#25d466] transition-colors"
                 >
-                  <mat-icon>visibility</mat-icon>
+                  <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
                 </div>
               </div>
             </label>
@@ -205,6 +213,16 @@ export class SignupComponent {
   isLoading = signal(false);
   isSuccess = signal(false);
   errorMessage = signal('');
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
+
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
+  }
 
   async onSubmit() {
     if (this.signupForm.invalid) return;

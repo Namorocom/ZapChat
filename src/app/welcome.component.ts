@@ -45,8 +45,8 @@ import { TranslationService } from "./translation.service";
           class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed text-center max-w-sm"
         >
           {{ ts.t().readOur }}
-          <span class="text-[#25d466] cursor-pointer">{{ ts.t().privacyPolicy }}</span>{{ ts.t().tapAgree }}
-          <span class="text-[#25d466] cursor-pointer">{{ ts.t().termsOfService }}</span>.
+          <span (click)="openPolicy()" (keydown.enter)="openPolicy()" tabindex="0" role="button" class="text-[#25d466] cursor-pointer hover:underline">{{ ts.t().privacyPolicy }}</span>{{ ts.t().tapAgree }}
+          <span (click)="openTerms()" (keydown.enter)="openTerms()" tabindex="0" role="button" class="text-[#25d466] cursor-pointer hover:underline">{{ ts.t().termsOfService }}</span>.
         </p>
 
         <div
@@ -86,4 +86,12 @@ import { TranslationService } from "./translation.service";
 })
 export class WelcomeComponent {
   ts = inject(TranslationService);
+
+  openPolicy() {
+    alert('Privacy Policy would open here.');
+  }
+
+  openTerms() {
+    alert('Terms of Service would open here.');
+  }
 }

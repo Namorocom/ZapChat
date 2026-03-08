@@ -61,8 +61,11 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
                 >{{ ts.t().password }}</label
               >
               <a
-                class="text-[#25d466] text-sm font-medium hover:underline"
-                href="#"
+                (click)="forgotPassword()"
+                (keydown.enter)="forgotPassword()"
+                tabindex="0"
+                role="button"
+                class="text-[#25d466] text-sm font-medium hover:underline cursor-pointer"
                 >{{ ts.t().forgotPassword }}</a
               >
             </div>
@@ -74,12 +77,16 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
                 formControlName="password"
                 class="flex w-full min-w-0 flex-1 border-none bg-transparent h-14 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-[#25d466]/40 p-4 text-base font-normal focus:ring-0 outline-none"
                 placeholder="••••••••"
-                type="password"
+                [type]="showPassword() ? 'text' : 'password'"
               />
               <div
-                class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center px-4 cursor-pointer"
+                (click)="togglePassword()"
+                (keydown.enter)="togglePassword()"
+                tabindex="0"
+                role="button"
+                class="text-slate-500 dark:text-[#25d466]/60 flex items-center justify-center px-4 cursor-pointer hover:text-slate-700 dark:hover:text-[#25d466] transition-colors"
               >
-                <mat-icon>visibility</mat-icon>
+                <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
               </div>
             </div>
           </div>
@@ -135,6 +142,15 @@ export class LoginComponent {
 
   isLoading = signal(false);
   errorMessage = signal('');
+  showPassword = signal(false);
+
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  forgotPassword() {
+    alert('Forgot password flow would open here.');
+  }
 
   async onSubmit() {
     if (this.loginForm.invalid) return;

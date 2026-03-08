@@ -42,9 +42,11 @@ import { FormsModule } from "@angular/forms";
                 alt="Avatar"
               />
             </div>
-            <div
-              class="absolute bottom-0 right-0 w-3 h-3 bg-[#25d466] border-2 border-[#f6f8f7] dark:border-[#1c2e22] rounded-full"
-            ></div>
+            @if (chat()?.isOnline) {
+              <div
+                class="absolute bottom-0 right-0 w-3 h-3 bg-[#25d466] border-2 border-[#f6f8f7] dark:border-[#1c2e22] rounded-full"
+              ></div>
+            }
           </div>
           <div class="flex flex-col">
             <h1
@@ -52,21 +54,28 @@ import { FormsModule } from "@angular/forms";
             >
               {{ chat()?.name }}
             </h1>
-            <span class="text-[11px] font-medium text-[#25d466]">Online</span>
+            @if (chat()?.isOnline) {
+              <span class="text-[11px] font-medium text-[#25d466]">Online</span>
+            } @else if (chat()?.lastSeen) {
+              <span class="text-[11px] font-medium text-slate-500">Last seen {{ chat()?.lastSeen | date: 'shortTime' }}</span>
+            }
           </div>
         </div>
         <div class="flex items-center gap-2">
           <button
+            (click)="simulateCall('video')"
             class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#25d466]/20 text-slate-700 dark:text-slate-200 transition-colors"
           >
             <mat-icon>videocam</mat-icon>
           </button>
           <button
+            (click)="simulateCall('audio')"
             class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#25d466]/20 text-slate-700 dark:text-slate-200 transition-colors"
           >
             <mat-icon>call</mat-icon>
           </button>
           <button
+            (click)="showMoreOptions()"
             class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#25d466]/20 text-slate-700 dark:text-slate-200 transition-colors"
           >
             <mat-icon>more_vert</mat-icon>
@@ -205,6 +214,7 @@ import { FormsModule } from "@angular/forms";
             class="flex-1 flex items-center bg-slate-100 dark:bg-[#1c2e22] rounded-full px-3 py-1 border border-transparent focus-within:border-[#25d466]/30 transition-all"
           >
             <button
+              (click)="toggleEmoji()"
               class="p-2 text-slate-500 dark:text-slate-400 hover:text-[#25d466] transition-colors"
             >
               <mat-icon>mood</mat-icon>
@@ -219,6 +229,7 @@ import { FormsModule } from "@angular/forms";
 
             <div class="relative group">
               <button
+                (click)="fileInput.click()"
                 class="p-2 text-slate-500 dark:text-slate-400 hover:text-[#25d466] transition-colors"
               >
                 <mat-icon>attach_file</mat-icon>
@@ -226,7 +237,7 @@ import { FormsModule } from "@angular/forms";
             </div>
 
             <button
-              (click)="fileInput.click()"
+              (click)="cameraInput.click()"
               class="p-2 text-slate-500 dark:text-slate-400 hover:text-[#25d466] transition-colors"
             >
               <mat-icon>photo_camera</mat-icon>
@@ -235,12 +246,20 @@ import { FormsModule } from "@angular/forms";
               type="file"
               #fileInput
               class="hidden"
-              accept="image/*"
+              accept="*/*"
+              (change)="onFileSelected($event)"
+            />
+            <input
+              type="file"
+              #cameraInput
+              class="hidden"
+              accept="image/*,video/*"
+              capture="environment"
               (change)="onFileSelected($event)"
             />
           </div>
           <button
-            (click)="sendMessage()"
+            (click)="handleAction()"
             class="flex items-center justify-center size-12 rounded-full bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform"
           >
             <mat-icon class="font-bold">{{
@@ -281,6 +300,26 @@ export class ChatDetailComponent implements AfterViewChecked {
 
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  simulateCall(type: 'audio' | 'video') {
+    alert(`Starting ${type} call with ${this.chat()?.name}...`);
+  }
+
+  showMoreOptions() {
+    alert('More options: View contact, Media, Search, Mute notifications, Disappearing messages, Wallpaper, More');
+  }
+
+  toggleEmoji() {
+    alert('Emoji picker would open here.');
+  }
+
+  handleAction() {
+    if (this.newMessage || this.selectedFile) {
+      this.sendMessage();
+    } else {
+      alert('Recording voice message... (Simulated)');
+    }
   }
 
   scrollToBottom(): void {

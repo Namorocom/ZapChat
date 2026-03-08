@@ -20,6 +20,8 @@ export interface Chat {
   unreadCount: number;
   type: "normal" | "search" | "maps" | "video";
   messages: Message[];
+  isOnline?: boolean;
+  lastSeen?: Date;
 }
 
 @Injectable({ providedIn: "root" })
@@ -32,6 +34,7 @@ export class ChatService {
         "https://lh3.googleusercontent.com/aida-public/AB6AXuBg_66d1g_b4cSYHUSzgtZLRp54EdmYwayqMaTwzYQclDhW3i1T68wpDQPyZb8HHZ5_Nnjq9JqYPqYMuGx3EDYQJNZ6lCnFQFap0smPDIyk6kDdH6IFQDVlhIbMSh277egoTBbSRQB-X0pOsxyNVNtBTZ2YTPtKGb9IwBzzqUBnK3ebxamzoPbNfpVky_xDfP2GjAkm60L48de0TrNSTyF5j4Pp5d9mKpK5hn9prh9dxCEeXrNFSb11oKL-BkPoenBfFaNgBAXZpBc",
       unreadCount: 2,
       type: "normal",
+      isOnline: true,
       messages: [
         {
           id: "m1",
@@ -85,6 +88,7 @@ export class ChatService {
       avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Search",
       unreadCount: 0,
       type: "search",
+      isOnline: true,
       messages: [
         {
           id: "m1",
@@ -100,6 +104,8 @@ export class ChatService {
       avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Local",
       unreadCount: 0,
       type: "maps",
+      isOnline: false,
+      lastSeen: new Date(Date.now() - 86400000),
       messages: [
         {
           id: "m1",
@@ -115,6 +121,8 @@ export class ChatService {
       avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Studio",
       unreadCount: 0,
       type: "video",
+      isOnline: false,
+      lastSeen: new Date(Date.now() - 3600000),
       messages: [
         {
           id: "m1",

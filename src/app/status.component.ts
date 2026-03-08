@@ -34,7 +34,6 @@ import { FormsModule } from "@angular/forms";
               <button (click)="cameraInput.click()" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
                 <mat-icon>photo_camera</mat-icon>
               </button>
-              <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
               <button (click)="toggleSearch()" class="flex items-center justify-center p-2 rounded-full hover:bg-[#25d466]/10 transition-colors">
                 <mat-icon>search</mat-icon>
               </button>
@@ -49,7 +48,7 @@ import { FormsModule } from "@angular/forms";
       <main class="flex-1 overflow-y-auto px-4">
         <h2 class="text-lg font-bold mb-4">Status</h2>
         
-        <div class="flex items-center gap-4 mb-6">
+        <div (click)="cameraInput.click()" (keydown.enter)="cameraInput.click()" tabindex="0" role="button" class="flex items-center gap-4 mb-6 cursor-pointer hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
           <div class="relative shrink-0">
             <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-14 w-14 flex items-center justify-center">
               <mat-icon class="text-slate-500 dark:text-slate-400">person</mat-icon>
@@ -67,7 +66,7 @@ import { FormsModule } from "@angular/forms";
         <div class="border-t border-slate-200 dark:border-[#274532]/30 pt-4">
           <p class="text-slate-500 dark:text-slate-400 text-sm font-semibold mb-4">Recent updates</p>
           
-          <div class="flex items-center gap-4 mb-4">
+          <div (click)="viewStatus('Alex')" (keydown.enter)="viewStatus('Alex')" tabindex="0" role="button" class="flex items-center gap-4 mb-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
             <div class="relative shrink-0 p-[2px] rounded-full bg-gradient-to-tr from-[#25d466] to-[#25d466]">
               <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-12 w-12 border-2 border-[#f6f8f7] dark:border-[#122017]" style="background-image: url('https://picsum.photos/seed/status1/200/200')"></div>
             </div>
@@ -77,7 +76,7 @@ import { FormsModule } from "@angular/forms";
             </div>
           </div>
 
-          <div class="flex items-center gap-4 mb-4">
+          <div (click)="viewStatus('Sarah')" (keydown.enter)="viewStatus('Sarah')" tabindex="0" role="button" class="flex items-center gap-4 mb-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-[#25d466]/5 p-2 rounded-xl transition-colors">
             <div class="relative shrink-0 p-[2px] rounded-full bg-gradient-to-tr from-[#25d466] to-[#25d466]">
               <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-12 w-12 border-2 border-[#f6f8f7] dark:border-[#122017]" style="background-image: url('https://picsum.photos/seed/status2/200/200')"></div>
             </div>
@@ -89,13 +88,15 @@ import { FormsModule } from "@angular/forms";
         </div>
       </main>
 
-      <button class="fixed bottom-40 right-6 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200 dark:bg-[#274532] text-slate-700 dark:text-slate-200 shadow-lg hover:scale-105 active:scale-95 transition-transform z-20">
+      <button (click)="openTextStatus()" class="fixed bottom-40 right-6 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-200 dark:bg-[#274532] text-slate-700 dark:text-slate-200 shadow-lg hover:scale-105 active:scale-95 transition-transform z-20">
         <mat-icon class="text-xl">edit</mat-icon>
       </button>
 
-      <button class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform z-20">
+      <button (click)="cameraInput.click()" class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#25d466] text-[#122017] shadow-lg shadow-[#25d466]/20 hover:scale-105 active:scale-95 transition-transform z-20">
         <mat-icon class="text-3xl font-bold">photo_camera</mat-icon>
       </button>
+
+      <input type="file" accept="image/*,video/*" capture="environment" #cameraInput class="hidden" (change)="onCameraCapture($event)">
 
       <footer class="sticky bottom-0 z-10 w-full border-t border-slate-200 dark:border-[#274532] bg-[#f6f8f7] dark:bg-[#1c3123] px-4 pb-6 pt-2">
         <nav class="flex justify-around items-center">
@@ -140,5 +141,13 @@ export class StatusComponent {
       alert('Photo/Video captured! (This is a demo)');
       input.value = '';
     }
+  }
+
+  viewStatus(name: string) {
+    alert(`Viewing ${name}'s status...`);
+  }
+
+  openTextStatus() {
+    alert('Opening text status editor...');
   }
 }

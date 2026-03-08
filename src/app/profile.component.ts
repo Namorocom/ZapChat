@@ -29,17 +29,24 @@ import { User } from "@supabase/supabase-js";
       </div>
 
       <div class="px-4 py-8 flex flex-col items-center">
-        <div class="relative mb-8">
-          <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-32 w-32 flex items-center justify-center overflow-hidden">
-            @if (user()?.user_metadata?.['avatar_url']) {
-              <img [src]="user()?.user_metadata?.['avatar_url']" alt="Profile" class="w-full h-full object-cover" />
-            } @else {
-              <mat-icon class="text-slate-500 dark:text-slate-400 text-6xl" style="width: 60px; height: 60px; font-size: 60px;">person</mat-icon>
-            }
+        <div class="relative mb-8 flex flex-col items-center">
+          <div class="relative">
+            <div class="bg-slate-300 dark:bg-slate-700 aspect-square bg-cover rounded-full h-32 w-32 flex items-center justify-center overflow-hidden border-4 border-[#122017]">
+              @if (user()?.user_metadata?.['avatar_url']) {
+                <img [src]="user()?.user_metadata?.['avatar_url']" alt="Profile" class="w-full h-full object-cover" />
+              } @else {
+                <mat-icon class="text-slate-500 dark:text-slate-400 text-6xl" style="width: 60px; height: 60px; font-size: 60px;">person</mat-icon>
+              }
+            </div>
+            <button (click)="avatarInput.click()" type="button" class="absolute bottom-0 right-0 w-10 h-10 bg-[#25d466] text-[#122017] rounded-full flex items-center justify-center shadow-lg hover:bg-[#25d466]/90 transition-colors z-10">
+              <mat-icon>photo_camera</mat-icon>
+            </button>
+            <input type="file" accept="image/*" #avatarInput class="hidden" (change)="onAvatarSelected($event)">
           </div>
-          <button class="absolute bottom-0 right-0 w-10 h-10 bg-[#25d466] text-[#122017] rounded-full flex items-center justify-center shadow-lg hover:bg-[#25d466]/90 transition-colors">
-            <mat-icon>photo_camera</mat-icon>
-          </button>
+          <div class="mt-4 flex items-center gap-2">
+            <div class="w-2.5 h-2.5 bg-[#25d466] rounded-full"></div>
+            <span class="text-[#25d466] text-sm font-medium">Online</span>
+          </div>
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6 w-full max-w-[480px]">
@@ -166,6 +173,41 @@ export class ProfileComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+  }
+
+  async onAvatarSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      
+      // Check file size (limit to 2MB to avoid metadata limits)
+      if (file.size > 2 * 1024 * 1024) {
+        this.errorMessage.set('Image is too large. Please select an image under 2MB.');
+        return;
+      }
+
+      this.isLoading.set(true);
+      this.errorMessage.set('');
+      
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Image = e.target?.result as string;
+        
+        const { error } = await this.supabase.client.auth.updateUser({
+          data: { avatar_url: base64Image }
+        });
+        
+        this.isLoading.set(false);
+        
+        if (error) {
+          this.errorMessage.set(error.message);
+        } else {
+          this.successMessage.set('Profile picture updated!');
+          setTimeout(() => this.successMessage.set(''), 3000);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   async onSubmit() {
