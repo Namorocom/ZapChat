@@ -18,11 +18,7 @@ import { TranslationService } from "./translation.service";
         >
           ZapChat
         </h2>
-        <div class="flex items-center gap-2">
-          <mat-icon class="text-slate-900 dark:text-slate-100 cursor-pointer"
-            >more_vert</mat-icon
-          >
-        </div>
+        <div class="w-12"></div>
       </div>
 
       <div class="flex w-full grow p-4 flex-col items-center justify-center">

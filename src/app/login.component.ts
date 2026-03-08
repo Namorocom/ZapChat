@@ -103,39 +103,6 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
               }
             </button>
           </div>
-
-          <div class="flex items-center py-6">
-            <div
-              class="flex-grow border-t border-slate-300 dark:border-[#25d466]/20"
-            ></div>
-            <span class="px-4 text-slate-500 dark:text-slate-400 text-sm"
-              >{{ ts.t().orContinueWith }}</span
-            >
-            <div
-              class="flex-grow border-t border-slate-300 dark:border-[#25d466]/20"
-            ></div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              class="flex items-center justify-center gap-2 h-12 rounded-lg border border-slate-300 dark:border-[#25d466]/20 bg-transparent hover:bg-slate-100 dark:hover:bg-[#25d466]/5 transition-colors"
-            >
-              <img
-                class="w-5 h-5"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu4cppA_uiv60eZhBcKKejO1yA9PFK0lKPnp5GrC8T8nxpnNY3CBXhVRqitxp8y1zktu69A3y9F7LFopNnLEnhx7g8IdpiEVV0RukoisykqE99fTPEOF0K5TaKAlt48PmT30BMn4M0YBz4xQI5Kkxj22JRP1LTbkErYM7PNn0k9D_o6ErK0j1czd7j9ZIwFkcTk4Ki0b8cl3ZWfoln4usc91h0F0CdiXpPBOE3HzJSpFzXh-8cctEJc0cE3HHRD0WM_jbJNcdv_5E"
-                alt="Google logo"
-              />
-              <span class="text-sm font-medium">Google</span>
-            </button>
-            <button
-              type="button"
-              class="flex items-center justify-center gap-2 h-12 rounded-lg border border-slate-300 dark:border-[#25d466]/20 bg-transparent hover:bg-slate-100 dark:hover:bg-[#25d466]/5 transition-colors"
-            >
-              <mat-icon class="text-blue-600">social_leaderboard</mat-icon>
-              <span class="text-sm font-medium">Facebook</span>
-            </button>
-          </div>
         </form>
 
         <div class="mt-auto pt-12 pb-6 text-center">
