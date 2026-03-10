@@ -24,13 +24,14 @@ export class SupabaseService {
     return this.supabase;
   }
 
-  async signUp(email: string, password: string, fullName?: string) {
+  async signUp(email: string, password: string, fullName?: string, phone?: string) {
     return this.supabase.auth.signUp({ 
       email, 
       password,
       options: {
         data: {
-          full_name: fullName
+          full_name: fullName,
+          phone_number: phone
         }
       }
     });

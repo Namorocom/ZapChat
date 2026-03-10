@@ -37,37 +37,10 @@ export class ChatService {
 
   async loadUsers() {
     try {
-      // Fetch users from profiles table if it exists
-      const { data, error } = await this.supabase.client
-        .from('profiles')
-        .select('*');
-        
-      if (error) {
-        console.error('Error fetching users:', error);
-        this.loadMockChats();
-        return;
-      }
-      
-      if (data) {
-        const currentUser = await this.supabase.client.auth.getUser();
-        const currentUserId = currentUser.data.user?.id;
-        
-        const userChats: Chat[] = data
-          .filter(profile => profile.id !== currentUserId)
-          .map(profile => ({
-            id: profile.id,
-            name: profile.full_name || profile.username || 'Unknown User',
-            avatar: profile.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + profile.id,
-            unreadCount: 0,
-            type: 'normal',
-            isOnline: true,
-            messages: []
-          }));
-          
-        this.chats.set(userChats);
-      }
+      // Simulating device contacts as requested
+      this.loadMockChats();
     } catch (e) {
-      console.error('Failed to load users', e);
+      console.error('Failed to load contacts', e);
       this.loadMockChats();
     }
   }
@@ -75,10 +48,9 @@ export class ChatService {
   loadMockChats() {
     this.chats.set([
       {
-        id: "1",
+        id: "contact1",
         name: "Alex Johnson",
-        avatar:
-          "https://lh3.googleusercontent.com/aida-public/AB6AXuBg_66d1g_b4cSYHUSzgtZLRp54EdmYwayqMaTwzYQclDhW3i1T68wpDQPyZb8HHZ5_Nnjq9JqYPqYMuGx3EDYQJNZ6lCnFQFap0smPDIyk6kDdH6IFQDVlhIbMSh277egoTBbSRQB-X0pOsxyNVNtBTZ2YTPtKGb9IwBzzqUBnK3ebxamzoPbNfpVky_xDfP2GjAkm60L48de0TrNSTyF5j4Pp5d9mKpK5hn9prh9dxCEeXrNFSb11oKL-BkPoenBfFaNgBAXZpBc",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
         unreadCount: 2,
         type: "normal",
         isOnline: true,
@@ -98,7 +70,17 @@ export class ChatService {
         ],
       },
       {
-        id: "2",
+        id: "contact2",
+        name: "Beatriz Silva",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Beatriz",
+        unreadCount: 0,
+        type: "normal",
+        isOnline: false,
+        lastSeen: new Date(Date.now() - 7200000),
+        messages: [],
+      },
+      {
+        id: "zap-search",
         name: "Zap Search",
         avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Search",
         unreadCount: 0,

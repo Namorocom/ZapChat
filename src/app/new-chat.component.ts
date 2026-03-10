@@ -105,36 +105,12 @@ export class NewChatComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     try {
-      const { data, error } = await this.supabase.client
-        .from('profiles')
-        .select('*');
-        
-      if (error) {
-        console.error('Error fetching users:', error);
-        this.errorMessage.set('Could not connect to Supabase. Please check your Supabase URL and Key.');
-        this.loadMockUsers();
-        this.isLoading.set(false);
-        return;
-      }
-      
-      if (data) {
-        const currentUser = await this.supabase.client.auth.getUser();
-        const currentUserId = currentUser.data.user?.id;
-        
-        const mappedUsers = data
-          .filter(profile => profile.id !== currentUserId)
-          .map(profile => ({
-            id: profile.id,
-            name: profile.full_name || profile.username || 'Unknown User',
-            avatar: profile.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + profile.id,
-          }));
-          
-        this.users.set(mappedUsers);
-      }
-    } catch (e) {
-      console.error('Failed to load users', e);
-      this.errorMessage.set('Network error while connecting to Supabase.');
+      // Simulating device contacts as requested
+      // In a real app, we might use the Contact Picker API if supported
       this.loadMockUsers();
+    } catch (e) {
+      console.error('Failed to load contacts', e);
+      this.errorMessage.set('Error loading device contacts.');
     } finally {
       this.isLoading.set(false);
     }
@@ -142,10 +118,14 @@ export class NewChatComponent implements OnInit {
 
   loadMockUsers() {
     this.users.set([
-      { id: 'mock1', name: 'Alice Smith', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Alice' },
-      { id: 'mock2', name: 'Bob Jones', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Bob' },
-      { id: 'mock3', name: 'Charlie Brown', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Charlie' },
-      { id: 'mock4', name: 'Diana Prince', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Diana' },
+      { id: 'contact1', name: 'Alex Johnson', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex' },
+      { id: 'contact2', name: 'Beatriz Silva', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Beatriz' },
+      { id: 'contact3', name: 'Carlos Santos', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos' },
+      { id: 'contact4', name: 'Diana Costa', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Diana' },
+      { id: 'contact5', name: 'Eduardo Pereira', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Eduardo' },
+      { id: 'contact6', name: 'Fernanda Lima', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Fernanda' },
+      { id: 'contact7', name: 'Gabriel Souza', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gabriel' },
+      { id: 'contact8', name: 'Helena Rocha', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Helena' },
     ]);
   }
 

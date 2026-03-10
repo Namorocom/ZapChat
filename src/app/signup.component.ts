@@ -77,6 +77,39 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
               <p
                 class="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal pb-2 ml-1"
               >
+                Phone number
+              </p>
+              <div class="flex gap-2">
+                <select
+                  formControlName="countryCode"
+                  class="w-24 rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#25d466]/50 border border-slate-300 dark:border-[#25d466]/20 bg-white dark:bg-[#25d466]/10 focus:border-[#25d466] h-14 p-[10px] text-sm transition-all"
+                >
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+351">🇵🇹 +351</option>
+                  <option value="+55">🇧🇷 +55</option>
+                  <option value="+34">🇪🇸 +34</option>
+                  <option value="+33">🇫🇷 +33</option>
+                  <option value="+49">🇩🇪 +49</option>
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+86">🇨🇳 +86</option>
+                  <option value="+81">🇯🇵 +81</option>
+                </select>
+                <input
+                  formControlName="phone"
+                  class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#25d466]/50 border border-slate-300 dark:border-[#25d466]/20 bg-white dark:bg-[#25d466]/10 focus:border-[#25d466] h-14 placeholder:text-slate-400 dark:placeholder:text-[#25d466]/40 p-[15px] text-base font-normal leading-normal transition-all"
+                  placeholder="912 345 678"
+                  type="tel"
+                />
+              </div>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap items-end gap-4 py-3">
+            <label class="flex flex-col min-w-40 flex-1">
+              <p
+                class="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal pb-2 ml-1"
+              >
                 Email
               </p>
               <input
@@ -206,6 +239,8 @@ export class SignupComponent {
   signupForm = this.fb.group({
     fullName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
+    countryCode: ['+1', Validators.required],
+    phone: ['', [Validators.required, Validators.pattern(/^[0-9\s-]{7,15}$/)]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', Validators.required]
   });
@@ -227,7 +262,7 @@ export class SignupComponent {
   async onSubmit() {
     if (this.signupForm.invalid) return;
     
-    const { email, password, confirmPassword, fullName } = this.signupForm.value;
+    const { email, password, confirmPassword, fullName, countryCode, phone } = this.signupForm.value;
     
     if (password !== confirmPassword) {
       this.errorMessage.set('Passwords do not match');
@@ -237,7 +272,8 @@ export class SignupComponent {
     this.isLoading.set(true);
     this.errorMessage.set('');
     
-    const { error } = await this.supabase.signUp(email!, password!, fullName!);
+    const fullPhone = `${countryCode}${phone?.replace(/\s/g, '')}`;
+    const { error } = await this.supabase.signUp(email!, password!, fullName!, fullPhone);
     
     this.isLoading.set(false);
     
