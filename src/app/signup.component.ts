@@ -87,6 +87,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
                   <option value="+1">🇺🇸 +1</option>
                   <option value="+44">🇬🇧 +44</option>
                   <option value="+351">🇵🇹 +351</option>
+                  <option value="+244">🇦🇴 +244</option>
                   <option value="+55">🇧🇷 +55</option>
                   <option value="+34">🇪🇸 +34</option>
                   <option value="+33">🇫🇷 +33</option>
